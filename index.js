@@ -100,9 +100,17 @@ async function run() {
 
     app.post("/enrolls",async (req,res)=>{
       const data =req.body
-      const id =req.params.id
       const result =await enrollCollection.insertOne(data)
+      res.send(result)
     })
+
+     app.get("/my-enrolls", async (req, res) => {
+      const email = req.query.email;
+      const result = await enrollCollection
+        .find({enrollBy: email})
+        .toArray();
+        res.send(result)
+    });
 
 
     // Send a ping to confirm a successful connection
