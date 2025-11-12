@@ -26,7 +26,7 @@ async function run() {
     await client.connect();
     const db = client.db("userDB");
     const courseCollection = db.collection("user2");
-    const enrollCollection =db.collection("enrolls")
+    const enrollCollection = db.collection("enrolls");
 
     app.get("/courses", async (req, res) => {
       const result = await courseCollection.find().toArray();
@@ -93,25 +93,30 @@ async function run() {
     app.get("/my-courses", async (req, res) => {
       const email = req.query.email;
       const result = await courseCollection
-        .find({createdBy: email})
+        .find({ createdBy: email })
         .toArray();
-        res.send(result)
+      res.send(result);
     });
 
-    app.post("/enrolls",async (req,res)=>{
-      const data =req.body
-      const result =await enrollCollection.insertOne(data)
-      res.send(result)
-    })
+    app.post("/enrolls", async (req, res) => {
+      const data = req.body;
+      const result = await enrollCollection.insertOne(data);
+      res.send(result);
+    });
 
-     app.get("/my-enrolls", async (req, res) => {
+    app.get("/my-enrolls", async (req, res) => {
       const email = req.query.email;
-      const result = await enrollCollection
-        .find({enrollBy: email})
-        .toArray();
-        res.send(result)
+      const result = await enrollCollection.find({ enrollBy: email }).toArray();
+      res.send(result);
     });
 
+    app.get("/courses/category/:category", async (req, res) => {
+      const { category } = req.params;
+      const result = await courseCollection
+        .find({ category: { $regex: new RegExp(category, "i") } })
+        .toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
