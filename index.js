@@ -47,7 +47,7 @@ async function run() {
 
     app.post("/courses", async (req, res) => {
       const data = req.body;
-      // console.log(data)
+      
       const result = await courseCollection.insertOne(data);
       res.send({
         success: true,
